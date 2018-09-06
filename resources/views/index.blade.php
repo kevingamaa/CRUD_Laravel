@@ -14,7 +14,7 @@
 							Aqui você cadastra todos os seu produtos.
 							Só não se esqueça de cadastrar previamente as categorias
 						</p>
-						<a href="/produtos" class="btn btn-outline-primary">
+						<a href="/produtos/novo" class="btn btn-outline-primary">
 							Cadastre seus produtos
 						</a>
 					</div>
@@ -27,7 +27,7 @@
 							Cadastre as categorias dos seus produtos.
 							Em seguida podera cadastrar seus produtos
 						</p>
-						<a href="/categorias" class="btn btn-outline-warning">
+						<a href="/categorias/nova" class="btn btn-outline-warning">
 							Cadastre suas categorias
 						</a>
 					</div>

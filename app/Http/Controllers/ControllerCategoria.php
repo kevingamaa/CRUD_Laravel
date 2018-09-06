@@ -36,8 +36,20 @@ class ControllerCategoria extends Controller
      */
     public function store(Request $request)
     {
+        $required = [
+            'nome' => 'required|min:3|max:50|unique:categorias'
+        ];
+
+        $msgs = [
+            'nome.required' => 'O nome da categoria é requirido',
+            'nome.unique' => 'Já existe essa categoria',
+            'nome.min' => 'O nome deve conter mais de 3 caracteres',
+            'nome.max' => 'O nome deve conter menos de 50 caracteres'
+        ];
+        $request->validate($required, $msgs);
+
         $cat = new Categoria();
-        $cat->nome = $request->input('nomeCategoria');
+        $cat->nome = $request->input('nome');
         $cat->save();
         return redirect('/categorias');
     }
@@ -82,7 +94,7 @@ class ControllerCategoria extends Controller
     {
         $cat = Categoria::find($id);
         if (isset($cat)) {
-            $cat->nome = $request->input('nomeCategoria');
+            $cat->nome = $request->input('nome');
             $cat->save();
         }
         return redirect('/categorias');

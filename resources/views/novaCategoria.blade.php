@@ -10,7 +10,13 @@
 				
 				<div class="form-group">
 					<label for="nomeCategoria">Nome da Categoria</label>
-					<input type="text" name="nomeCategoria" id="nomeCategoria" class="form-control" placeholder="Categoria">
+					<input type="text" name="nome" id="nomeCategoria" class="form-control {{ $errors->has('nome')? 'is-invalid' : ''}}" placeholder="Categoria">
+
+					@if($errors->has('nome'))
+						<div class="invalid-feedback">
+							{{ $errors->first('nome') }}
+						</div>
+					@endif
 				</div>
 				
 				<button type="submit" class="btn btn-sm btn-outline-primary">

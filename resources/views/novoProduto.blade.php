@@ -1,14 +1,8 @@
 @extends('layout.app',["current" => "Produtos"])
 
-@section('title', 'novo Produto')
+@section('title', 'Novo Produto')
 
 @section('body')
-
-	@if($error == 'error')
-		<small class="alert alert-warning p-3 m-2">
-			Produto já existe!
-		</small>
-	@endif
 	<div class="card border">
 		<div class="card-body">
 			<form action="/produtos" method="post">
@@ -18,26 +12,44 @@
 
 				<div class="form-row">
 					<div class="col-md-4 form-group">
-						<label for="nomeCategoria">Nome do produto </label>
-						<input type="text" name="nomeProduto" id="nomeProduto" class="form-control" placeholder="Produto">
+						<label for="nomeProduto">Nome do produto </label>
+						<input type="text" name="nome" id="nomeProduto" class="form-control {{ $errors->has('nome')? 'is-invalid' : '' }}" placeholder="Produto">
+						@if($errors->has('nome'))
+							<div class="invalid-feedback">
+								{{ $errors->first('nome') }}
+							</div>
+						@endif
 					</div>
 
 					<div class="col-md-4 form-group">
 						<label for="preco">Preço R$</label>
-						<input type="text" name="preco" id="preco" class="form-control">	
+						<input type="text" name="preco" id="preco" class="form-control  {{ $errors->has('preco')? 'is-invalid' : '' }} ">	
+						@if($errors->has('preco'))
+							<div class="invalid-feedback">
+								{{ $errors->first('preco') }}
+							</div>
+						@endif
 					</div>
 
 					<div class="col-md-4">
 						<label for="cat">Categoria</label>
-						<select class="custom-select" id="cat" name="categoria">
-							<option>Escolha a categoria</option>
+						<select class="custom-select  {{ $errors->has('categoria')? 'is-invalid' : '' }}" id="cat" name="categoria">
+							<option value="">Escolha a categoria</option>
 							
 							@foreach($cat as $c)
 								<option value="{{$c->id}}">{{$c->nome}}</option>
 							@endforeach
 
 						</select>
+
+						@if($errors->has('categoria'))
+							<div class="invalid-feedback">
+								{{ $errors->first('categoria') }}
+							</div>
+						@endif
 					</div>
+
+					
 				</div>
 				
 				<button type="submit" class="btn btn-sm btn-outline-primary">

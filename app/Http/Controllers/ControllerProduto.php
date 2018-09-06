@@ -24,11 +24,11 @@ class ControllerProduto extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($error)
+    public function create()
     {
 
         $cat = Categoria::all();
-        return view('novoProduto', compact(['cat', 'error']) );
+        return view('novoProduto', compact('cat') );
     }
 
     /**
@@ -39,22 +39,29 @@ class ControllerProduto extends Controller
      */
     public function store(Request $request)
     {
-        $prod = Produto::where('nome', $request->input('nomeProduto') )->first();
+        $required = [
+            'nome' => 'required|min:3|max:50|unique:produtos',
+            'preco'=> 'required|min:3',
+            'categoria'=> 'required'
+        ];
 
-        if (!isset($prod)) {
-            $newProd = new Produto();
-            $newProd->categoria_id = $request->input('categoria');
-            $newProd->nome = $request->input('nomeProduto');
-            $newProd->preco = $request->input('preco');
-            $newProd->estoque += 1;
-            $newProd->save();
+        $msgs = [
+            'required'=> 'O campo :attribute não pode estar em branco',
+            'nome.unique' => 'Já existe esse produto',
+            'nome.min' => 'O nome deve conter mais de 3 caracteres',
+            'nome.max' => 'O nome deve conter menos de 50 caracteres'
+        ];
 
-            $retorno = redirect('/produtos');
-        }else{
-            $retorno = redirect('/produtos/novo/error');
-        }
+        $request->validate($required, $msgs);
 
-        return $retorno;
+        $prod = new Produto();
+        $prod->categoria_id = $request->input('categoria');
+        $prod->nome = $request->input('nome');
+        $prod->preco = $request->input('preco');
+        $prod->estoque += 1;
+        $prod->save();
+
+        return redirect('/produtos');
     }
 
     /**
@@ -94,7 +101,7 @@ class ControllerProduto extends Controller
         $prod = Produto::find($id);
         if (isset($prod)) {
             $prod->categoria_id = $request->input('categoria');
-            $prod->nome = $request->input('nomeProduto');
+            $prod->nome = $request->input('nome');
             $prod->preco = $request->input('preco');
             $prod->estoque = $request->input('estoque');
             $prod->save();

@@ -17,9 +17,10 @@ Route::get('/', function () {
 
 Route::prefix('produtos')->group(function(){
 	Route::get('/', 'ControllerProduto@index');
-	Route::get('/novo/{error?}', 'ControllerProduto@create');
+	Route::get('/novo', 'ControllerProduto@create');
 
 	Route::get('/editar/{id}', 'ControllerProduto@edit');
+
 	Route::get('/apagar/{id}', 'ControllerProduto@destroy');
 	Route::get('/apagartodos', 'ControllerProduto@destroyAll');
 
