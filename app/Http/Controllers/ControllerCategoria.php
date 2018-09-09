@@ -121,4 +121,16 @@ class ControllerCategoria extends Controller
         $cat->delete();
         return redirect('/categorias');
     }
+
+
+
+
+    public function indexJson()
+    {
+        $cats = Categoria::all();
+
+        header('Content-type: Application/json');
+
+        return json_encode($cats);
+    }
 }

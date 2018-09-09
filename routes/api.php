@@ -16,3 +16,16 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('/categorias', 'ControllerCategoria@indexJson');
+
+
+Route::prefix('produtos')->group(function(){
+
+	Route::get('/', 'ControllerProduto@index');
+
+	Route::post('/', 'ControllerProduto@store');
+
+	Route::delete('/{id}', 'ControllerProduto@destroy');
+});

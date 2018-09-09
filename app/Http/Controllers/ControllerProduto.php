@@ -12,13 +12,17 @@ class ControllerProduto extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function indexView()
     {
-        $prod = Produto::all();
-        $cat = Categoria::all();
-        return view('produtos', compact(['prod', 'cat']) );
+        return view('produtos');
     }
 
+
+
+    public function index(){
+        $prod = Produto::all();
+        return $prod->toJson();
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -27,8 +31,6 @@ class ControllerProduto extends Controller
     public function create()
     {
 
-        $cat = Categoria::all();
-        return view('novoProduto', compact('cat') );
     }
 
     /**
@@ -39,29 +41,15 @@ class ControllerProduto extends Controller
      */
     public function store(Request $request)
     {
-        $required = [
-            'nome' => 'required|min:3|max:50|unique:produtos',
-            'preco'=> 'required|min:3',
-            'categoria'=> 'required'
-        ];
-
-        $msgs = [
-            'required'=> 'O campo :attribute não pode estar em branco',
-            'nome.unique' => 'Já existe esse produto',
-            'nome.min' => 'O nome deve conter mais de 3 caracteres',
-            'nome.max' => 'O nome deve conter menos de 50 caracteres'
-        ];
-
-        $request->validate($required, $msgs);
-
+       
         $prod = new Produto();
         $prod->categoria_id = $request->input('categoria');
         $prod->nome = $request->input('nome');
         $prod->preco = $request->input('preco');
-        $prod->estoque += 1;
+        $prod->estoque = $request->input('estoque');
         $prod->save();
 
-        return redirect('/produtos');
+        return json_encode($prod);
     }
 
     /**
@@ -121,17 +109,14 @@ class ControllerProduto extends Controller
         $prod = Produto::find($id);
         if (isset($prod)) {
             $prod->delete();
+            $retorno = response('ok', 200);
+        }else{
+            $retorno = response('error', 404);
         }
 
-        return redirect('/produtos');
+        return $retorno;
+
     }
 
-    public function destroyAll()
-    {
-        $prod = Produto::where('id','>',0);
-        if (isset($prod)) {
-            $prod->delete();
-        }
-        return redirect('/produtos');
-    }
+
 }

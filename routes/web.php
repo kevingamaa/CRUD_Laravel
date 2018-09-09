@@ -15,18 +15,7 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::prefix('produtos')->group(function(){
-	Route::get('/', 'ControllerProduto@index');
-	Route::get('/novo', 'ControllerProduto@create');
-
-	Route::get('/editar/{id}', 'ControllerProduto@edit');
-
-	Route::get('/apagar/{id}', 'ControllerProduto@destroy');
-	Route::get('/apagartodos', 'ControllerProduto@destroyAll');
-
-	Route::post('/', 'ControllerProduto@store');
-	Route::post('/{id}', 'ControllerProduto@update');
-});
+Route::get('/produtos', 'ControllerProduto@indexView');
 
 
 Route::prefix('categorias')->group(function(){

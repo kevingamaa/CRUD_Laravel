@@ -23,5 +23,8 @@
 		</div>
 	</div>
 	<script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+	@hasSection('js')
+		@yield('js')
+	@endif	
 </body>
 </html>
