@@ -26,6 +26,10 @@ Route::prefix('produtos')->group(function(){
 	Route::get('/', 'ControllerProduto@index');
 
 	Route::post('/', 'ControllerProduto@store');
+	
+	Route::get('/{id}', 'ControllerProduto@show');
 
+	Route::PUT('/{id}', 'ControllerProduto@update');
+	
 	Route::delete('/{id}', 'ControllerProduto@destroy');
 });

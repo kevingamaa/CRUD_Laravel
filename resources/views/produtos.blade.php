@@ -66,7 +66,7 @@
 						</div>
 
 						<div class="form-group">
-							<label class="categoriaProduto">Categoria</label>
+							<label class="categoria_id">Categoria</label>
 							<div class="input-group">
 								<select class="custom-select" id="categoria_id" name="categoria">
 
@@ -99,16 +99,19 @@
 	 		}
 	 	});
 
+
 	 	$('.btn-novo').click(function(){
 	 		$('#dlgProdutos').show('3000').modal('show');
+	 		carregaCategorias();
+	 	});
 
+	 	function carregaCategorias(){
 	 		$.getJSON('/api/categorias', function(data){
 	 			$.each(data, function(i,e){
 	 				$('#categoria_id').append('<option value="'+e.id+'">'+e.nome+'</option>')
 	 			});
 	 		});
-	 	});
-
+	 	}
 
 	 	$('.btn-cancela').click(function(){
 	 		limpaForm();
@@ -130,8 +133,8 @@
 					<td>`+e.preco+`</td>
 					<td>`+e.categoria_id+`</td>
 					<td>
-						<button type="button" class="btn btn-primary btn-sm btn-edit" onclick="">Editar</button>
-						<button type="button" class="btn btn-danger btn-sm btn-remove" onclick="remover(`+e.id+`)">Apagar</button>
+						<button type="button" class="btn btn-primary btn-sm" onclick="editar(`+e.id+`)">Editar</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="remover(`+e.id+`)">Apagar</button>
 					</td>
 				</tr>
 	 		`;
@@ -140,7 +143,7 @@
 	 	function carregaProdutos(){
 	 		$.getJSON('/api/produtos', function(data){
 	 			$.each(data, function(i,e){
-	 				table.append(linha(e));
+	 				table.fadeIn().append(linha(e));
 	 			});
 	 		});
 
@@ -151,10 +154,7 @@
 	 	});
 		
 		function remover(id){
-			 
-			 
-
-
+		
 			$.ajax({
 				url: '/api/produtos/'+id,
 				type: 'DELETE',
@@ -176,12 +176,36 @@
 			});
 		}
 
+
+	
+		function editar($id){
+			$.getJSON('/api/produtos/'+$id, function(data){
+				carregaCategorias();
+				$('#formProduto').attr('action', '/api/produtos/'+data.id);
+
+				$('#id').val(data.id);
+				$('#nome').val(data.nome);
+				$('#preco').val(data.preco);
+				$('#estoque').val(data.estoque);
+				$('#categoria_id').val(data.categoria_id);
+				$('#dlgProdutos').show('3000').modal('show');
+			});	
+		}
+
+
 	 	$('form').submit(function(e){
 	 		e.preventDefault();
-
 	 		var form = $(this);
 	 		var action = form.attr('action');
 
+	 		if (form.find('#id').val() == '') {
+	 			criaProduto(form,action);
+	 		}else{
+	 			salvarProduto(form, action);
+	 		}
+	 	});
+
+	 	function criaProduto(form,action){
 	 		$.post(action, form.serialize(), function(data){
 	 			var produto = JSON.parse(data);
 	 			form.parents('.modal').modal('hide').fadeOut('slow');
@@ -189,9 +213,40 @@
 
 	 			limpaForm();
 	 		});
-	 	});
+	 	}
 
+	 	function salvarProduto(form, action){
+	 		$.ajax({
+		 		url: action ,
+		 		type: 'PUT',
+		 		data: form.serialize(),
+		 		dataType: 'json',
+		 		context: this,
+		 		success: function(data){
+		 			limpaForm();
+					form.parents('.modal').modal('hide').fadeOut('slow');
+		 			
 
+		 			e = table.children().filter(function(i,e){
+						return e.cells[0].textContent == data.id;
+					});
+
+					if (e) {
+						e.hide('slow');
+						e[0].cells[0].textContent = data.id;
+						e[0].cells[1].textContent = data.nome;
+						e[0].cells[2].textContent = data.estoque;
+						e[0].cells[3].textContent = data.preco;
+						e[0].cells[4].textContent = data.categoria_id;
+						e.show('slow');
+					}
+		 			
+		 		},
+		 		error: function(error){
+		 			console.log(error);
+		 		}
+		 	});
+	 	}
 
 	 	
 	 </script>

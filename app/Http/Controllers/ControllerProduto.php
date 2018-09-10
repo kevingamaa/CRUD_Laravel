@@ -60,7 +60,15 @@ class ControllerProduto extends Controller
      */
     public function show($id)
     {
-        //
+        $prod = Produto::find($id);
+
+        if (isset($prod)) {
+            $retorno = $prod;
+        }else{
+            $retorno = response('não encontrado', 404);
+        }
+
+        return $retorno;
     }
 
     /**
@@ -71,10 +79,8 @@ class ControllerProduto extends Controller
      */
     public function edit($id)
     {
-        $prod = Produto::find($id);
-        $cat = Categoria::all();
-
-        return view('editarProduto', compact(['prod', 'cat']));
+       
+       
     }
 
     /**
@@ -93,9 +99,13 @@ class ControllerProduto extends Controller
             $prod->preco = $request->input('preco');
             $prod->estoque = $request->input('estoque');
             $prod->save();
+
+            $retorno = $prod;
+        }else{
+            $retorno = response('error produto não encontrado', 404);
         }
 
-        return redirect('/produtos');
+        return $retorno;
     }
 
     /**
